@@ -3,7 +3,6 @@ import "./App.css";
 import Login from "./components/Login";
 import Sala from "./routes/sala";
 import axios from "axios";
-require('dotenv').config()
 
 export default function App() {
   const [user, setUser] = useState(0);

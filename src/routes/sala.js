@@ -3,7 +3,6 @@ import io from "socket.io-client";
 import LogoutGoogle from "../components/Logout";
 import Mensaje from "../components/Mensaje";
 
-require('dotenv').config()
 
 const socket = io(process.env.URL);
 

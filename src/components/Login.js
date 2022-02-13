@@ -3,8 +3,6 @@ import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import LoginGoogle from "./LoginGoogle"
-require('dotenv').config()
-
 export default function Login(props) {
   const {
     register,
