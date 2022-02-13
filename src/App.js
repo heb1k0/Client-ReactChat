@@ -13,7 +13,7 @@ export default function App() {
     if (loggedUser) {
       let userToken = JSON.parse(loggedUser);
       axios
-        .post(process.env.URL+"/checkToken", { token: userToken.token })
+        .post("/checkToken", { token: userToken.token })
         .then((res) => {
           if (res.status === 200) {
             setUser(userToken);

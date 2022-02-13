@@ -22,7 +22,7 @@ export default function Register() {
 
   const sendForm = async (data) => {
     try {
-      let ResultRegister = await axios.post(process.env.URL+"/3002/register", {
+      let ResultRegister = await axios.post("http://139.59.149.58:3002/register", {
         username,
         password,
       });

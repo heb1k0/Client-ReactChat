@@ -25,7 +25,7 @@ export default function Login(props) {
   const sendSubmit = async (e) => {
     try {
       if (username && password) {
-        let result = await axios.post(process.env.URL+"/login", {
+        let result = await axios.post("http://139.59.149.58:3002/login", {
           username,
           password,
         });
