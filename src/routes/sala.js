@@ -4,7 +4,7 @@ import LogoutGoogle from "../components/Logout";
 import Mensaje from "../components/Mensaje";
 
 
-const socket = io(process.env.URL);
+const socket = io("http://139.59.149.58:3002");
 
 export default function Sala(props) {
 
