@@ -13,7 +13,7 @@ export default function App() {
     if (loggedUser) {
       let userToken = JSON.parse(loggedUser);
       axios
-        .post("/checkToken", { token: userToken.token })
+        .post("http://139.59.149.58:3002/checkToken", { token: userToken.token })
         .then((res) => {
           if (res.status === 200) {
             setUser(userToken);
