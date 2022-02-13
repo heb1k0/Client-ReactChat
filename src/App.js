@@ -3,6 +3,7 @@ import "./App.css";
 import Login from "./components/Login";
 import Sala from "./routes/sala";
 import axios from "axios";
+require('dotenv').config()
 
 export default function App() {
   const [user, setUser] = useState(0);
@@ -13,7 +14,7 @@ export default function App() {
     if (loggedUser) {
       let userToken = JSON.parse(loggedUser);
       axios
-        .post(process.env.NODE_ENV+"/checkToken", { token: userToken.token })
+        .post(process.env.URL+"/checkToken", { token: userToken.token })
         .then((res) => {
           if (res.status === 200) {
             setUser(userToken);

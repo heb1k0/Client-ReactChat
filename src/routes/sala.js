@@ -1,10 +1,11 @@
 import { useEffect, useState, useRef } from "react";
 import io from "socket.io-client";
 import LogoutGoogle from "../components/Logout";
-
 import Mensaje from "../components/Mensaje";
 
-const socket = io(process.env.NODE_ENV);
+require('dotenv').config()
+
+const socket = io(process.env.URL);
 
 export default function Sala(props) {
 

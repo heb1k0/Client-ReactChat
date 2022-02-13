@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import axios from "axios";
+require('dotenv').config()
 
 export default function Register() {
   const {
@@ -22,7 +23,7 @@ export default function Register() {
 
   const sendForm = async (data) => {
     try {
-      let ResultRegister = await axios.post("http://localhost:3002/register", {
+      let ResultRegister = await axios.post(process.env.URL+"/3002/register", {
         username,
         password,
       });

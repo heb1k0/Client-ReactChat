@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import LoginGoogle from "./LoginGoogle"
+require('dotenv').config()
 
 export default function Login(props) {
   const {
@@ -26,7 +27,7 @@ export default function Login(props) {
   const sendSubmit = async (e) => {
     try {
       if (username && password) {
-        let result = await axios.post(process.env.NODE_ENV+"/login", {
+        let result = await axios.post(process.env.URL+"/login", {
           username,
           password,
         });
