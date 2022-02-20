@@ -7,14 +7,17 @@ import axios from "axios";
 export default function App() {
   const [user, setUser] = useState(0);
   const [loading, setLoading] = useState(0);
+  const [isGoogle , setIsGoogle] = useState(0);
 
   useEffect(() => {
     let loggedUser = window.localStorage.getItem("user");
     if (loggedUser) {
       let userToken = JSON.parse(loggedUser);
+      userToken.isGoogle ? setIsGoogle(true) : setIsGoogle(0);
       axios
-        .post("http://139.59.149.58:3002/checkToken", { token: userToken.token })
+        .post("http://localhost:3002/checkToken", { token: userToken.token })
         .then((res) => {
+          console.log(res)
           if (res.status === 200) {
             setUser(userToken);
           } else {
@@ -36,9 +39,9 @@ export default function App() {
     <div className="App">
       <div className="container">
         {user ? (
-          <Sala handleLogout={setUser} User={user.name}></Sala>
+          <Sala handleLogout={setUser} User={user.name} idUser={user.id} isGoogle={isGoogle}></Sala>
         ) : (
-          <Login handleLogin={setUser} />
+          <Login setIsGoogle={setIsGoogle} handleLogin={setUser} />
         )}
       </div>
     </div>

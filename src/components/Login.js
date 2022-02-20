@@ -20,22 +20,23 @@ export default function Login(props) {
   const [username, setUserName] = useState();
   const [password, setPassword] = useState();
 
-  const { handleLogin } = props;
+  const { handleLogin,setIsGoogle } = props;
 
   const sendSubmit = async (e) => {
     try {
       if (username && password) {
-        let result = await axios.post("http://139.59.149.58:3002/login", {
+        let result = await axios.post("http://localhost:3002/login", {
           username,
           password,
         });
 
         let name = result.data.username;
+        let id = result.data._id;
         let token = result.data.token;
 
-        handleLogin({ name, token });
+        handleLogin({ name, token, id });
 
-        window.localStorage.setItem("user", JSON.stringify({ name, token }));
+        window.localStorage.setItem("user", JSON.stringify({ name, token, isGoogle:false , id }));
       } else {
         alert("Ingrese usuario y contraseña");
       }
@@ -84,7 +85,7 @@ export default function Login(props) {
           <Link to="/register" className="btn btn-link">
             Registro
           </Link> <br />
-            <LoginGoogle handleLogin={handleLogin} />
+            <LoginGoogle setIsGoogle={setIsGoogle} handleLogin={handleLogin} />
         </div>
       </form>
     </div>

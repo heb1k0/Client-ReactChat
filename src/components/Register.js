@@ -19,11 +19,13 @@ export default function Register() {
 
   const [username, setUserName] = useState();
   const [password, setPassword] = useState();
+  const [email, setEmail] = useState();	
 
   const sendForm = async (data) => {
     try {
-      let ResultRegister = await axios.post("http://139.59.149.58:3002/register", {
+      let ResultRegister = await axios.post("http://localhost:3002/register", {
         username,
+        email,
         password,
       });
       console.log(ResultRegister.data);
@@ -50,6 +52,16 @@ export default function Register() {
                 placeholder="Enter username"
                 {...register("username", { required: true })}
                 onChange={(e) => setUserName(e.target.value)}
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="Email">Email</label>
+              <input
+                type="text"
+                className={`form-control ${errors.username && "is-invalid"}`}
+                placeholder="Enter email"
+                {...register("email", { required: true })}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
             <div className="form-group">

@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 
 import { GoogleLogin } from 'react-google-login';
 // refresh token
@@ -7,21 +8,26 @@ import { GoogleLogin } from 'react-google-login';
 const clientId = "1015667005546-0uu2tgbr43lgnc81ci8uh7l3srva2hh6.apps.googleusercontent.com";
 
 function LoginGoogle(props) {
-const { handleLogin } = props;
+const { handleLogin, setIsGoogle } = props;
   const onSuccess = (res) => {
-
 
     let name = res.profileObj.name;
     let token = null;
 
     handleLogin({ name, token });
+    setIsGoogle(true);
 
-    window.localStorage.setItem("user", JSON.stringify({ name, token }));
+    axios
+        .post("http://localhost:3002/registergoogle",  res )
+        .then((res) => {
+                handleLogin({ name, token:res.data.token,id:res.data._id });
+                window.localStorage.setItem("user", JSON.stringify({ name, token:res.data.token, isGoogle:true , id:res.data._id }));
+        })
+        .catch((err) => {
+          console.log(err)
+          window.localStorage.removeItem("user");
+        });
 
-    alert(
-      `Logged in successfully welcome ${res.profileObj.name} 😍. \n See console for full profile object.`
-    );
-    // refreshTokenSetup(res);
   };
 
   const onFailure = (res) => {
