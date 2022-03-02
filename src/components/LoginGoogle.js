@@ -1,5 +1,4 @@
-import React from 'react';
-import axios from 'axios';
+import React ,{useEffect} from 'react';
 
 import { GoogleLogin } from 'react-google-login';
 // refresh token
@@ -8,35 +7,29 @@ import { GoogleLogin } from 'react-google-login';
 const clientId = "1015667005546-0uu2tgbr43lgnc81ci8uh7l3srva2hh6.apps.googleusercontent.com";
 
 function LoginGoogle(props) {
-const { handleLogin, setIsGoogle } = props;
+const { handleLogin, setIsGoogle, socket } = props;
   const onSuccess = (res) => {
 
     let name = res.profileObj.name;
     let token = null;
 
-    handleLogin({ name, token });
     setIsGoogle(true);
-
-    axios
-        .post("http://localhost:3002/registergoogle",  res )
-        .then((res) => {
-                handleLogin({ name, token:res.data.token,id:res.data._id });
-                window.localStorage.setItem("user", JSON.stringify({ name, token:res.data.token, isGoogle:true , id:res.data._id }));
-        })
-        .catch((err) => {
-          console.log(err)
-          window.localStorage.removeItem("user");
-        });
+    socket.emit("user:loginGoogle", { username:name, token, email:res.profileObj.email });
 
   };
 
+  useEffect(() => {
+    socket.on("user:loginGoogleRES", (data) =>{
+      handleLogin({ username:data.user.username, token:data.user.token, id:data._id, isGoogle:true});
+    })
+  })
+
   const onFailure = (res) => {
-    console.log(clientId)
     console.error('Login failed: res:', res);
   };
 
   return (
-    <div>
+    <div className="p-2">
       <GoogleLogin
         clientId={clientId}
         buttonText="Login"

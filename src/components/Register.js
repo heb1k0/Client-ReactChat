@@ -1,14 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect} from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
-import axios from "axios";
 
-export default function Register() {
+export default function Register(props) {
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
+
+  const { socket, setlandingRegister } = props;
 
   const style = {
     width: "100%",
@@ -20,19 +20,31 @@ export default function Register() {
   const [username, setUserName] = useState();
   const [password, setPassword] = useState();
   const [email, setEmail] = useState();	
+  const [mensajeError, setEnsajeError] = useState("");
+
+
 
   const sendForm = async (data) => {
     try {
-      let ResultRegister = await axios.post("http://localhost:3002/register", {
-        username,
-        email,
-        password,
-      });
-      console.log(ResultRegister.data);
+
+      socket.emit("user:register", { username, email, password });
     } catch (e) {
-      console.log("Error -> ", e);
+      setEnsajeError(e.message)
     }
   };
+
+
+  useEffect(() =>{
+
+    socket.on("user:RegisterRES", (data) => {
+      if(data.error){
+        setEnsajeError("EL usuario o el correo electronico ya existe")
+      }else{
+        window.location.href = "/";
+      }
+    })
+
+  })
 
   return (
     <div className="container divLogin" style={style}>
@@ -41,6 +53,9 @@ export default function Register() {
           <h2 className="header-chat">Register</h2>
         </div>
       </div>
+      {mensajeError ? (
+        <div className='alert alert-danger text-center'>{mensajeError}</div>
+        ) : null}
       <div className="row">
         <div className="col-md-12">
           <form onSubmit={handleSubmit(sendForm)}>
@@ -50,8 +65,7 @@ export default function Register() {
                 type="text"
                 className={`form-control ${errors.username && "is-invalid"}`}
                 placeholder="Enter username"
-                {...register("username", { required: true })}
-                onChange={(e) => setUserName(e.target.value)}
+                {...register("username", { required: true , onChange: (e) => setUserName(e.target.value) })}
               />
             </div>
             <div className="form-group">
@@ -60,8 +74,7 @@ export default function Register() {
                 type="text"
                 className={`form-control ${errors.username && "is-invalid"}`}
                 placeholder="Enter email"
-                {...register("email", { required: true })}
-                onChange={(e) => setEmail(e.target.value)}
+                {...register("email", { required: true , onChange: (e) => setEmail(e.target.value) })}
               />
             </div>
             <div className="form-group">
@@ -70,15 +83,14 @@ export default function Register() {
                 type="password"
                 className={`form-control ${errors.password && "is-invalid"}`}
                 placeholder="Enter password"
-                {...register("password", { required: true })}
-                onChange={(e) => setPassword(e.target.value)}
+                {...register("password", { required: true , onChange: (e) => setPassword(e.target.value) })}
               />
             </div>
             <div className="pt-3 text-center">
               <button type="submit" className="btn btn-primary">
                 Registrarse
-              </button><br/>
-              <small className="form-text text-muted"><Link to="/">Volver atras.</Link></small>
+              </button><br/><br/>
+              <button className="btn btn-danger btn-small" onClick={() => setlandingRegister(0)}>Volver atras</button>
             </div>
           </form>
         </div>

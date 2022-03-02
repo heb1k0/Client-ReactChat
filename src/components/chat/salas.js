@@ -1,10 +1,7 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
+import {  useEffect } from "react";
 
 export default function Salas(props) {
-  const { socket,setuserRoom,setMessageList } = props;
-
-  const [salas, setSalas] = useState([]);
+  const { socket,setuserRoom,setMessageList, salas,setSalas , userRoom, user} = props;
 
 
   const GoRoom = (id,name) => {
@@ -15,32 +12,27 @@ export default function Salas(props) {
 
   useEffect(() => {
 
-    socket.emit("rooms");
-
-    socket.on("roomsRES", (data) => {
-      setSalas(data);
+    socket.on("room:joinRES", (data) => {
+      console.log("room:joinRES", data);
+      // setSalas(data);
     });
 
-    socket.on("newRoomRES", (data) => {
-      console.log("llega",data)
-      setSalas((sala) => [...sala, data]);
-      console.log(salas)
-    })
 
 
-  }, []);
+  }, [socket]);
+
 
 
   return salas.map((message, index) => {
     return (
+      
       <div
         key={message._id}
-        className="col-md-12 mb-3"
+        className="col-md-12 room"
         onClick={() => GoRoom(message._id, message.name)}
       >
-        <div className="card">
-          <div className="card-body">{message.name}</div>
-        </div>
+          <p className="room-header">Sala</p>
+          <p>{message.name}</p>
       </div>
     );
   });

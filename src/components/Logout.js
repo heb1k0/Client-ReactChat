@@ -4,17 +4,18 @@ import { GoogleLogout } from 'react-google-login';
 const clientId = "1015667005546-0uu2tgbr43lgnc81ci8uh7l3srva2hh6.apps.googleusercontent.com";
 
 function LogoutGoogle(props) {
-  const { handleLogout } = props;
+  const { handleLogout,socket  } = props;
   const onSuccess = () => {
+    socket.emit('user:logout');
     window.localStorage.removeItem("user");
     handleLogout(0)
   };
 
   return (
-    <div>
+    <div className="p-2">
       <GoogleLogout
         clientId={clientId}
-        buttonText="Logout"
+        buttonText="Desconectarse"
         onLogoutSuccess={onSuccess}
       ></GoogleLogout>
     </div>

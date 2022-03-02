@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import Register from "./Register";
 import LoginGoogle from "./LoginGoogle"
 export default function Login(props) {
   const {
@@ -15,37 +15,48 @@ export default function Login(props) {
     maxWidth: "600px",
     backgroundColor: "white",
     padding: "40px",
+    borderRadius: "4px",
+    marginTop: "20px"
   };
 
   const [username, setUserName] = useState();
   const [password, setPassword] = useState();
+  const [mensajeError, setMensajeError] = useState("");
+  const [landingRegister,setlandingRegister] = useState(0);
 
-  const { handleLogin,setIsGoogle } = props;
+  const { handleLogin,setIsGoogle,socket } = props;
 
   const sendSubmit = async (e) => {
     try {
+      setMensajeError(0);
       if (username && password) {
-        let result = await axios.post("http://localhost:3002/login", {
-          username,
-          password,
-        });
 
-        let name = result.data.username;
-        let id = result.data._id;
-        let token = result.data.token;
+        socket.emit("user:Login", { username, password });
 
-        handleLogin({ name, token, id });
-
-        window.localStorage.setItem("user", JSON.stringify({ name, token, isGoogle:false , id }));
       } else {
-        alert("Ingrese usuario y contraseña");
+        setMensajeError("Ingrese usuario y contraseña");
       }
     } catch (err) {
-      console.error(err);
+      setMensajeError("Usuario o contraseña incorrectos");
     }
   };
+
+  useEffect(() => {
+
+    socket.on("user:LoginRES", data =>{
+        if(data.error || data.msj){
+          setMensajeError("Usuario o contraseña incorrectos");
+        }else{
+          handleLogin({ username:data.username, token:data.token, isGoogle:false , id:data._id });
+        }
+    })
+
+  },[handleLogin, socket]);
   return (
-    <div className="d-flex justify-content-center divLogin">
+    <div>
+    {!landingRegister ? (
+    <div className="d-flex justify-content-center">
+      
       <form style={style} onSubmit={handleSubmit(sendSubmit)}>
         <div className="text-center">
           <img
@@ -57,24 +68,27 @@ export default function Login(props) {
           <h3 className="p-4 text">LOGIN CHAT</h3>
         </div>
 
+        {mensajeError ? (
+        <div className='alert alert-danger text-center'>{mensajeError}</div>
+        ) : null}
+
         <div className="form-group">
           <label className="form-label">Username</label>
           <input
             type="text"
-            {...register("username", { required: true })}
-            className={`form-control ${errors.username && "is-invalid"}`}
+            {...register("username", { required: true, onChange: (e) => setUserName(e.target.value) })}
+            className={`form-control ${errors.username ? "is-invalid" : ""}`}
             placeholder="Enter Username"
-            onChange={(e) => setUserName(e.target.value)}
           />
         </div>
         <div className="form-group">
           <label className="form-label">Password</label>
           <input
             type="password"
-            {...register("password", { required: true })}
-            className={`form-control ${errors.password && "is-invalid"}`}
+            {...register("password", { required: true, onChange: (e) => setPassword(e.target.value) })}
+            className={`form-control ${errors.password ? "is-invalid": ''}`}
             placeholder="Enter password"
-            onChange={(e) => setPassword(e.target.value)}
+
           />
         </div>
         <div className="pt-3 text-center">
@@ -82,12 +96,17 @@ export default function Login(props) {
             Login
           </button>
           <br />
-          <Link to="/register" className="btn btn-link">
-            Registro
-          </Link> <br />
-            <LoginGoogle setIsGoogle={setIsGoogle} handleLogin={handleLogin} />
+          <LoginGoogle socket={socket} setIsGoogle={setIsGoogle} handleLogin={handleLogin} />
+          <br />
+          <button className="btn btn-link btn-block col-5" onClick={() => setlandingRegister(1)} >
+            Registrarse
+          </button>
         </div>
       </form>
+    </div>
+    ) : (
+      <Register setlandingRegister={setlandingRegister} socket={socket} ></Register>
+    )}
     </div>
   );
 }

@@ -1,53 +1,27 @@
 import { useState, useEffect } from "react";
 import "./App.css";
+import io from "socket.io-client";
 import Login from "./components/Login";
 import Sala from "./routes/sala";
-import axios from "axios";
+
+
+const socket = io("http://localhost:3002");
 
 export default function App() {
   const [user, setUser] = useState(0);
-  const [loading, setLoading] = useState(0);
-  const [isGoogle , setIsGoogle] = useState(0);
-
-  useEffect(() => {
-    let loggedUser = window.localStorage.getItem("user");
-    if (loggedUser) {
-      let userToken = JSON.parse(loggedUser);
-      userToken.isGoogle ? setIsGoogle(true) : setIsGoogle(0);
-      axios
-        .post("http://localhost:3002/checkToken", { token: userToken.token })
-        .then((res) => {
-          console.log(res)
-          if (res.status === 200) {
-            setUser(userToken);
-          } else {
-            window.localStorage.removeItem("user");
-          }
-          setTimeout(() => {
-            setLoading(1);
-          }, 2000);
-        })
-        .catch((err) => {
-          window.localStorage.removeItem("user");
-        });
-    }else{
-      setLoading(1);
-    }
-  }, []);
+  const [loading, setLoading] = useState(1);
+  const [isGoogle, setIsGoogle] = useState(0);
 
   return loading ? (
     <div className="App">
-      <div className="container">
         {user ? (
-          <Sala handleLogout={setUser} User={user.name} idUser={user.id} isGoogle={isGoogle}></Sala>
+          <Sala socket={socket} handleLogout={setUser} user={user} tokenUser={user.token} isGoogle={isGoogle}></Sala>
         ) : (
-          <Login setIsGoogle={setIsGoogle} handleLogin={setUser} />
+          <Login socket={socket} setIsGoogle={setIsGoogle} handleLogin={setUser} />
         )}
-      </div>
     </div>
   ) : (
     <div className="App">
-      <div className="container">
         <div className="row">
           <div className="col-md-12 text-center loader">
             <img
@@ -60,7 +34,6 @@ export default function App() {
             <p>Loading....</p>
           </div>
         </div>
-      </div>
     </div>
   );
 }
