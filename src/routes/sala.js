@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState, useRef } from "react";
 import Mensaje from "../components/Mensaje";
 import Profile from "../components/Profile";
@@ -66,7 +67,7 @@ export default function Sala(props) {
 
     socket.on("chat:list", (data) => {
       data.chats.forEach((item) => {
-        let send = user.username == item.username ? true : false;
+        let send = user.username === item.username ? true : false;
         setMessageList((list) => [
           ...list,
           {
