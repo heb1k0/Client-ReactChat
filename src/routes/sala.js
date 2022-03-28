@@ -195,6 +195,7 @@ export default function Sala(props) {
             setuserRoom={setuserRoom}
             setMessageList={setMessageList}
             createSala={createSala}
+            setSalas={setSalas}
             setcreateSala={setcreateSala}
             socket={socket}
           ></Createroom>
