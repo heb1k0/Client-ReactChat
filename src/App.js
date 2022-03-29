@@ -5,7 +5,7 @@ import Login from "./components/Login";
 import Sala from "./routes/sala";
 
 
-const socket = io("http://139.59.149.58:3002");
+const socket = io("http://localhost:3002");
 
 export default function App() {
   const [user, setUser] = useState(0);
