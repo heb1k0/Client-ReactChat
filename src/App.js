@@ -4,6 +4,7 @@ import io from "socket.io-client";
 import Login from "./components/Login";
 import Sala from "./routes/sala";
 
+import Loading from "./components/Loading";
 
 const socket = io("http://localhost:3002");
 
@@ -14,26 +15,25 @@ export default function App() {
 
   return loading ? (
     <div className="App">
-        {user ? (
-          <Sala socket={socket} handleLogout={setUser} user={user} tokenUser={user.token} isGoogle={isGoogle}></Sala>
-        ) : (
-          <Login socket={socket} setIsGoogle={setIsGoogle} handleLogin={setUser} />
-        )}
+      {user ? (
+        <Sala
+          socket={socket}
+          handleLogout={setUser}
+          user={user}
+          tokenUser={user.token}
+          isGoogle={isGoogle}
+        ></Sala>
+      ) : (
+        <Login
+          socket={socket}
+          setIsGoogle={setIsGoogle}
+          handleLogin={setUser}
+        />
+      )}
     </div>
   ) : (
     <div className="App">
-        <div className="row">
-          <div className="col-md-12 text-center loader">
-            <img
-              src="https://www.barcelonactiva.cat/documents/20124/389312/logoITAcademy.png/"
-              alt="logo"
-              className="img-fluid img-pulse block"
-              style={{ width: "200px" }}
-            />{" "}
-            <br />
-            <p>Loading....</p>
-          </div>
-        </div>
+      <Loading />
     </div>
   );
 }
