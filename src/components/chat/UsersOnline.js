@@ -1,5 +1,3 @@
-import {useEffect, useState} from "react";
-
 export default function UsersOnline(props){
 
     const { Users } = props;
@@ -15,7 +13,9 @@ export default function UsersOnline(props){
                         <div className="card">
                             <div className="card-body">
                                 <small className="user-header">Usuario:</small><br/>
-                                {user.username}
+                                {user.username}<br/>
+                                <small className="user-header">Sala:</small><br/>
+                                {user.room.name}
                             </div>
                         </div>
                     </div>

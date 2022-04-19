@@ -6,13 +6,13 @@ import Sala from "./routes/sala";
 
 import Loading from "./components/Loading";
 
-const socket = io("http://localhost:3002");
+
+const socket = io(process.env.REACT_APP_URL);
 
 export default function App() {
   const [user, setUser] = useState(0);
   const [loading, setLoading] = useState(1);
   const [isGoogle, setIsGoogle] = useState(0);
-
   return loading ? (
     <div className="App">
       {user ? (
@@ -22,6 +22,7 @@ export default function App() {
           user={user}
           tokenUser={user.token}
           isGoogle={isGoogle}
+          setIsGoogle={setIsGoogle}
         ></Sala>
       ) : (
         <Login

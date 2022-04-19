@@ -28,7 +28,7 @@ export default function Sala(props) {
     console.log("createsala", createSala);
   };
 
-  const { handleLogout, user, tokenUser, isGoogle, socket } = props;
+  const { handleLogout, user, tokenUser, isGoogle, socket, setIsGoogle } = props;
 
   let Input = document.getElementById("inputSend");
   var chatDiv = document.getElementById("chatDiv");
@@ -154,6 +154,7 @@ export default function Sala(props) {
         <Profile
           socket={socket}
           isGoogle={isGoogle}
+          setIsGoogle={setIsGoogle}
           handleLogout={handleLogout}
           Logout={Logout}
         ></Profile>
